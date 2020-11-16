@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+import { useAuth } from '../../hooks/auth';
 
 import getValidationErrors from '../../utils/getValidationErrors';
 
@@ -40,35 +41,38 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
+  const { signIn } = useAuth();
 
-  const handleSignIn = useCallback(async (data: SignInFormData) => {
-    try {
-      const schema = Yup.object().shape({
-        email: Yup.string()
-          .required('E-mail is required')
-          .email('Invalid Email'),
-        password: Yup.string().required('Password is required'),
-      });
+  const handleSignIn = useCallback(
+    async (data: SignInFormData) => {
+      try {
+        const schema = Yup.object().shape({
+          email: Yup.string()
+            .required('E-mail is required')
+            .email('Invalid Email'),
+          password: Yup.string().required('Password is required'),
+        });
 
-      await schema.validate(data, {
-        abortEarly: false,
-      });
+        await schema.validate(data, {
+          abortEarly: false,
+        });
 
-      // await signIn({ email: data.email, password: data.password });
-      // history.push('/dashboard');
-    } catch (err) {
-      if (err instanceof Yup.ValidationError) {
-        const errors = getValidationErrors(err);
-        formRef.current?.setErrors(errors);
+        await signIn({ email: data.email, password: data.password });
+      } catch (err) {
+        if (err instanceof Yup.ValidationError) {
+          const errors = getValidationErrors(err);
+          formRef.current?.setErrors(errors);
 
-        return;
+          return;
+        }
+        Alert.alert(
+          'Authentication error',
+          'Error on Login, check your credentials.',
+        );
       }
-      Alert.alert(
-        'Authentication error',
-        'Error on Login, check your credentials.',
-      );
-    }
-  }, []);
+    },
+    [signIn],
+  );
 
   return (
     <>
