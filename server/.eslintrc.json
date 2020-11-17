@@ -20,6 +20,7 @@
   },
   "plugins": ["@typescript-eslint", "prettier"],
   "rules": {
+    "no-usuless-contructor": "off",
     "class-methods-use-this": "off",
     "import/extensions": [
       "error",
@@ -34,6 +35,19 @@
       "error",
       {
         "argsIgnorePattern": "_"
+      }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "interface",
+        "format": [
+          "StrictPascalCase"
+        ],
+        "leadingUnderscore": "allow",
+        "prefix": [
+          "I"
+        ]
       }
     ]
   },
