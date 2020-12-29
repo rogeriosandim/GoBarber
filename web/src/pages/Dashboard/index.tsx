@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
+import DayPicker, { DayModifiers } from 'react-day-picker';
+import 'react-day-picker/lib/style.css';
 
 import { FiClock, FiPower } from 'react-icons/fi';
 import {
@@ -20,6 +22,12 @@ import { useAuth } from '../../hooks/auth';
 const Dashboard: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const { signOut, user } = useAuth();
+
+  const handleDateChange = useCallback((day: Date, modifiers: DayModifiers) => {
+    if (modifiers.available && !modifiers.disabled) {
+      setSelectedDate(day);
+    }
+  }, []);
 
   return (
     <Container>
@@ -76,24 +84,48 @@ const Dashboard: React.FC = () => {
                 <strong>{user.name}</strong>
               </div>
             </Appointment>
+          </Section>
+          <Section>
+            <strong>Afternoon</strong>
+            <Appointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+              <div>
+                <img src={user.avatar_url} alt={user.name} />
 
-            <Section>
-              <strong>Afternoon</strong>
-              <Appointment>
-                <span>
-                  <FiClock />
-                  08:00
-                </span>
-                <div>
-                  <img src={user.avatar_url} alt={user.name} />
-
-                  <strong>{user.name}</strong>
-                </div>
-              </Appointment>
-            </Section>
+                <strong>{user.name}</strong>
+              </div>
+            </Appointment>
           </Section>
         </Schedule>
-        <Calendar />
+        <Calendar>
+          <DayPicker
+            weekdaysShort={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+            fromMonth={new Date()}
+            disabledDays={[{ daysOfWeek: [0, 6] }]}
+            modifiers={{
+              available: { daysOfWeek: [1, 2, 3, 4, 5] },
+            }}
+            selectedDays={selectedDate}
+            onDayClick={handleDateChange}
+            months={[
+              'January',
+              'February',
+              'March',
+              'April',
+              'May',
+              'June',
+              'July',
+              'August',
+              'September',
+              'October',
+              'November',
+              'December',
+            ]}
+          />
+        </Calendar>
       </Content>
     </Container>
   );
