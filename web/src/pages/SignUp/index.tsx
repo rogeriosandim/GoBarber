@@ -46,7 +46,7 @@ const SignUp: React.FC = () => {
 
         await api.post('/users', data);
 
-        history.push('/');
+        history.push('/signin');
 
         addToast({
           type: 'success',
@@ -89,7 +89,7 @@ const SignUp: React.FC = () => {
             <Button type="submit">Register</Button>
           </Form>
 
-          <Link to="/">
+          <Link to="/signin">
             <FiArrowLeft />
             Return to Logon
           </Link>
